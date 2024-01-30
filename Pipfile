@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+opencv-python = "*"
+dlib = "*"
+fastapi = "*"
+uvicorn = "*"
+cloudinary = "*"
+python-dotenv = "*"
+sqlalchemy = "*"
+psycopg2 = "*"
+python-multipart = "*"
+pydantic = "==1.10.8"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
