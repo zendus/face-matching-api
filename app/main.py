@@ -4,14 +4,18 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
+from hog_face_detection import extract_and_compare_distance
 from . import schema, model
 from .database import engine, get_db
 import cloudinary
 import cloudinary.uploader
 
+
 # Create the table in the database
 model.Base.metadata.create_all(bind=engine)
 
+# Define a variable to track the count of successful matches and a list of face 
+global successful_match_count
 
 app = FastAPI()
 
@@ -52,9 +56,8 @@ db: Session = Depends(get_db)):
 
 @app.post("/match-faces/")
 async def match_faces(passport_image: UploadFile = File(...)):
-    # Compare the submitted passport image with pre-existing images
-    # Perform face matching and return matching score
-    # Increment successful match count
+    
+
     matching_score = 0.75  # Placeholder value
     return JSONResponse(content={"matching_score": matching_score})
 
