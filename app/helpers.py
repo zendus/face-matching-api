@@ -1,5 +1,6 @@
-from .hog_face_detection import detect_and_extract_faces, extract_face_features
+from .hog_cnn_face_detection import detect_and_extract_faces_using_hog, detect_and_extract_faces_using_cnn, extract_face_features
 from urllib.request import urlopen
+from .error import FaceError
 import numpy as np
 import cv2
 
@@ -13,7 +14,7 @@ async def load_image_and_return_gray(cloudinary_url):
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         return gray_image
     else:
-        print("Error: Failed to load the image from Cloudinary.")
+        raise FaceError("Error: Failed to load the image from Cloudinary.")
 
 
 
@@ -23,7 +24,7 @@ async def generate_passport_descriptors(list_of_users):
 	for user in list_of_users:
 		id = user.id
 		image = await load_image_and_return_gray(user.passport_url)
-		face = await detect_and_extract_faces(image)
+		face = await detect_and_extract_faces_using_hog(image)
 		face_descriptor = extract_face_features(image, face[0])
 		descriptors[id] = face_descriptor
 	return descriptors
@@ -61,7 +62,7 @@ async def get_one_face_descriptor(file):
     # Convert the image to grayscale
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    face = await detect_and_extract_faces(gray_image)
+    face = await detect_and_extract_faces_using_hog(gray_image)
 
     face_descriptor = extract_face_features(image, face[0])
 

@@ -1,0 +1,2 @@
+class FaceError(Exception):
+    pass

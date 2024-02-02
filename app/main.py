@@ -1,15 +1,20 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, HTTPException
 from fastapi import File, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-from .hog_face_detection import compare_faces
+from .hog_cnn_face_detection import compare_faces
 from .helpers import generate_passport_descriptors, get_one_face_descriptor
 from . import schema, model
 from .database import engine, get_db, SessionLocal
 import cloudinary
 import cloudinary.uploader
+import logging
+
+# Create a logger instance
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG) 
 
 # Create the table in the database
 model.Base.metadata.create_all(bind=engine)
@@ -48,9 +53,12 @@ async def startup_event():
     try:
         db_passport_descriptors = await generate_passport_descriptors_from_db(db)
         successful_match_count = 0
-        print({"message": "Passport Face Descriptors Loaded in memory Successfully"})
+        logger.warning("Passport Face Descriptors Loaded in memory Successfully")
+    except Exception as e:
+        logger.error("Error occurred during server startup: {e}")
     finally:
         db.close()
+
 
 
 
@@ -68,29 +76,30 @@ db: Session = Depends(get_db)):
         passport_image = cloudinary.uploader.upload(file.file)
         url = passport_image.get("url")
         user.passport_url = url
+        new_user = model.User(**user.dict())
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        await startup_event()
+        return new_user
     except Exception as e:
-        pass
-    new_user = model.User(**user.dict())
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    await startup_event()
-    # return {"message": "Passport image submitted successfully"}
-    return new_user
+        logger.error(f"Error occurred during passport image upload: {e}")
+        raise HTTPException(status_code=500, detail="Error occurred during passport image upload")
 
 
 
 @app.post("/match-passport")
 async def match_faces(file: UploadFile = File(...)):
-    global successful_match_count
-    distances = {}
-    input_desc = await get_one_face_descriptor(file)
-    for id, desc in db_passport_descriptors.items():
-        distances[id] = compare_faces(input_desc, desc)
-    min_key, min_value = min(distances.items(), key=lambda item: item[1])
-    if min_value < 0.3:
-        successful_match_count+=1
-    print(distances)
-    return JSONResponse(content={"matching_score": (1 - min_value) * 100, "match_user_id": min_key, "bio_match_count": successful_match_count})
-   
-
+    try:
+        global successful_match_count
+        distances = {}
+        input_desc = await get_one_face_descriptor(file)
+        for id, desc in db_passport_descriptors.items():
+            distances[id] = compare_faces(input_desc, desc)
+        min_key, min_value = min(distances.items(), key=lambda item: item[1])
+        if min_value < 0.4:
+            successful_match_count+=1
+        return JSONResponse(content={"matching_score": (1 - min_value) * 100, "match_user_id": min_key, "successful_bio_match_count": successful_match_count})
+    except Exception as e:
+        logger.error(f"Error occurred during face match: {e}")
+        raise HTTPException(status_code=500, detail="Error occurred during face match")

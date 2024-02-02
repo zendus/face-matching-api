@@ -16,13 +16,18 @@ def detect_and_extract_faces(image_path):
     # Detect faces in the image
     face = face_detector(gray_image)
 
-    # Iterate over detected rectangles
-    for mmod_rect in face:
-        # Convert the mmod_rectangle to rectangle
-        rect = dlib.rectangle(mmod_rect.rect.left(), mmod_rect.rect.top(),
-                            mmod_rect.rect.right(), mmod_rect.rect.bottom())
+    if face:
+        # Iterate over detected rectangles
+        for mmod_rect in face:
+            # Convert the mmod_rectangle to rectangle
+            rect = dlib.rectangle(mmod_rect.rect.left(), mmod_rect.rect.top(),
+                                mmod_rect.rect.right(), mmod_rect.rect.bottom())
 
-    return rect
+        return rect
+    else:
+        print("No faces found in one or both images.")
+        return "No faces Found"
+
 
 
 # def main():
