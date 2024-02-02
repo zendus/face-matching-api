@@ -1,66 +1,38 @@
+import os
 import dlib
 import cv2
 import numpy as np
-import imutils
 
-def detect_and_extract_faces(image_path):
-    # Load the image
-    image = cv2.imread(image_path)
 
-    #resize image
-    # image = imutils.resize(image, width=600)
+# Define the path to the trained model file
+models_dir = "trained_models"
+face_rec_model_file_path = os.path.join(os.path.dirname(__file__), models_dir, "dlib_face_recognition_resnet_model_v1.dat")
+shape_predictor_model_file_path = os.path.join(os.path.dirname(__file__), models_dir, "shape_predictor_68_face_landmarks.dat")
+
+# Check if the model file exists
+if not os.path.exists(face_rec_model_file_path):
+    raise FileNotFoundError(f"Model file '{face_rec_model_file_path}' not found.")
+elif not os.path.exists(shape_predictor_model_file_path):
+    raise FileNotFoundError(f"Model file '{shape_predictor_model_file_path}' not found.")
+
+# Load the face recognition model
+face_rec_model = dlib.face_recognition_model_v1(face_rec_model_file_path)
+
+# Load the facial landmark predictor from dlib
+shape_predictor = dlib.shape_predictor(shape_predictor_model_file_path)
+
+
+async def detect_and_extract_faces(gray_image):
     
     # Initialize the face detector from dlib
     face_detector = dlib.get_frontal_face_detector()
     
-    # Convert the image to grayscale for face detection
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
     # Detect faces in the image
     face = face_detector(gray_image)
-    
-    # # Extract faces from the image
-    # extracted_faces = []
-    # for face in faces:
-    #     x, y, w, h = face.left(), face.top(), face.width(), face.height()
-    #     face_image = image[y:y+h, x:x+w]
-    #     extracted_faces.append(face_image)
-        
-    # return extracted_faces[0]
 
     return face
 
-# def main():
-#     image_path = 'passport.jpeg'
-    
-#     # Detect and extract faces
-#     extracted_faces = detect_and_extract_faces(image_path)
-    
-#     print(extracted_faces)
-    
-    # # Display the original image
-    # original_image = cv2.imread(image_path)
-    # cv2.imshow('Original Image', original_image)
-    
-    # # Display each extracted face
-    # for i, face in enumerate(extracted_faces):
-    #     cv2.imshow(f'Extracted Face {i+1}', face)
-    
-    # # Wait for a key press and then close all windows
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
 
-    
-
-# if __name__ == "__main__":
-#     main()
-
-
-# Load the pre-trained face recognition model from dlib
-face_rec_model = dlib.face_recognition_model_v1("trained_models/dlib_face_recognition_resnet_model_v1.dat")
-
-# Load the facial landmark predictor from dlib
-shape_predictor = dlib.shape_predictor("trained_models/shape_predictor_68_face_landmarks.dat")
 
 def extract_face_features(image, face):
      # Detect facial landmarks
@@ -77,37 +49,9 @@ def extract_face_features(image, face):
     
     return face_descriptor
 
+
 def compare_faces(face_descriptor1, face_descriptor2):
     # Calculate Euclidean distance between the two face descriptors
     distance = np.linalg.norm(np.array(face_descriptor1) - np.array(face_descriptor2))
     
     return distance
-
-
-def extract_and_compare_distance(image_path_1, image_path_2):
-    
-    # Load images
-    image1 = cv2.imread(image_path_1)
-    image2 = cv2.imread(image_path_2)
-
-    #extract faces from images
-    faces1 = detect_and_extract_faces(image_path_1)
-    faces2 = detect_and_extract_faces(image_path_2)
-    
-    if len(faces1) == 0 or len(faces2) == 0:
-        print("No faces found in one or both images.")
-        return
-    
-    # Extract features from the first face in each image
-    face_descriptor1 = extract_face_features(image1, faces1[0])
-    face_descriptor2 = extract_face_features(image2, faces2[0])
-    
-    # Compare face descriptors
-    distance = compare_faces(face_descriptor1, face_descriptor2)
-    
-    print("Euclidean distance between the faces:", distance)
-
-if __name__ == "__main__":
-    image_path_1 = 'passport.jpeg'
-    image_path_2 = 'passport3.jpeg'
-    extract_and_compare_distance(image_path_1, image_path_2)

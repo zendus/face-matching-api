@@ -8,3 +8,8 @@ class UploadPassport(BaseModel):
     name: str
     passport_url: Optional[str]
 
+
+class UserOut(BaseModel):
+    id: int
+    name: str
+    password_url: str
