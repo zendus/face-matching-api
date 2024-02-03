@@ -29,16 +29,6 @@ def detect_and_extract_faces(image_path):
         return "No faces Found"
 
 
-
-# def main():
-#     image_path = 'passport.jpeg'
-    
-#     # Detect and extract faces
-#     extracted_faces = detect_and_extract_faces(image_path)
-    
-#     print(extracted_faces)
-
-
 # Load the pre-trained face recognition model from dlib
 face_rec_model = dlib.face_recognition_model_v1("trained_models/dlib_face_recognition_resnet_model_v1.dat")
 
@@ -67,8 +57,8 @@ def compare_faces(face_descriptor1, face_descriptor2):
 
 
 def main():
-    image_path_1 = 'passport.jpeg'
-    image_path_2 = 'passport3.jpeg'
+    image_path_1 = 'images/passport.jpeg'
+    image_path_2 = 'images/passport3.jpeg'
     
     # Load images
     image1 = cv2.imread(image_path_1)
