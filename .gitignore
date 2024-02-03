@@ -8,6 +8,7 @@ __pycache__/
 
 /app/images
 app/cnn_face_detection.py
+command.txt
 
 # Distribution / packaging
 .Python
