@@ -60,9 +60,6 @@ async def startup_event():
         db.close()
 
 
-
-
-
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the face matching API"}
