@@ -23,11 +23,8 @@ Before running this API, ensure you have the following installed:
 2. Install the required Python packages:
 
     ```bash
+    pipenv install
    pip install pipenv
-   ```
-
-   ```bash
-   pipenv install
    ```
 
 3. Set up your PostgreSQL database and configure the connection in `database.py`.
@@ -55,6 +52,10 @@ Before running this API, ensure you have the following installed:
 ```bash
 curl -X POST -F "photo=@passport_photo.jpg" http://localhost:8000/match-passport
 ```
+
+## Documentation 
+
+You can go to the link `http://localhost:8000/docs` to access the API swagger documentation.
 
 ## Acknowledgments
 
