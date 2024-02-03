@@ -1,6 +1,6 @@
-from hog_cnn_face_detection import detect_and_extract_faces_using_hog, detect_and_extract_faces_using_cnn, extract_face_features
+from .hog_cnn_face_detection import detect_and_extract_faces_using_hog, detect_and_extract_faces_using_cnn, extract_face_features
 from urllib.request import urlopen
-from error import FaceError
+from .error import FaceError
 import numpy as np
 import cv2
 

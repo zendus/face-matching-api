@@ -4,11 +4,10 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-from hog_cnn_face_detection import compare_faces
-from helpers import generate_passport_descriptors, get_one_face_descriptor
-# from . import schema, model
-import schema, model
-from database import engine, get_db, SessionLocal
+from .hog_cnn_face_detection import compare_faces
+from .helpers import generate_passport_descriptors, get_one_face_descriptor
+from . import schema, model
+from .database import engine, get_db, SessionLocal
 import cloudinary
 import cloudinary.uploader
 import logging

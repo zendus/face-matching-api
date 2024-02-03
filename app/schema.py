@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from decorators import as_form
+from .decorators import as_form
 from typing import Optional
 
 
