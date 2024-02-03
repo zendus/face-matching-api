@@ -18,6 +18,8 @@ imutils = "*"
 numpy = "*"
 asyncpg = "*"
 greenlet = "*"
+opencv-contrib-python = "*"
+opencv-python-headless = "*"
 
 [dev-packages]
 
