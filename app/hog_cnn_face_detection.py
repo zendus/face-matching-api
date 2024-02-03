@@ -2,7 +2,7 @@ import os
 import dlib
 import cv2
 import numpy as np
-from .error import FaceError
+from error import FaceError
 
 
 # Define the path to the trained model file
