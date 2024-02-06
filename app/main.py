@@ -21,7 +21,7 @@ model.Base.metadata.create_all(bind=engine)
 
 
 # Define a variable to track the count of successful matches
-successful_match_count = None
+successful_match_count = 0
 db_passport_descriptors = None
 
 app = FastAPI()
@@ -49,13 +49,11 @@ async def generate_passport_descriptors_from_db(db: Session):
 async def startup_event():
     db = SessionLocal()
     global db_passport_descriptors
-    global successful_match_count
     try:
         db_passport_descriptors = await generate_passport_descriptors_from_db(db)
-        successful_match_count = 0
         logger.warning("Passport Face Descriptors Loaded in memory Successfully")
     except Exception as e:
-        logger.error("Error occurred during server startup: {e}")
+        logger.error(f"Error occurred during server startup: {e}")
     finally:
         db.close()
 

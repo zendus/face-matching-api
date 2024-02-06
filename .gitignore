@@ -6,9 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
-/app/images
-app/cnn_face_detection.py
-command.txt
+# /app/images
+# app/cnn_face_detection.py
+# command.txt
 
 # Distribution / packaging
 .Python
