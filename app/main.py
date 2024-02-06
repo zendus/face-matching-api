@@ -96,7 +96,10 @@ async def match_faces(file: UploadFile = File(...)):
         min_key, min_value = min(distances.items(), key=lambda item: item[1])
         if min_value < 0.4:
             successful_match_count+=1
-        return JSONResponse(content={"matching_score": (1 - min_value) * 100, "match_user_id": min_key, "successful_bio_match_count": successful_match_count})
+            return JSONResponse(content={"matching_score": (1 - min_value) * 100, "match_user_id": min_key, "successful_bio_match_count": successful_match_count})
+        else:
+            return JSONResponse(content={"matching_score": (1 - min_value) * 100, "message": "Match Score less than threshhold (60%)", "successful_bio_match_count": successful_match_count})
+            
     except Exception as e:
         logger.error(f"Error occurred during face match: {e}")
         raise HTTPException(status_code=500, detail="Error occurred during face match")
