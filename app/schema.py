@@ -3,9 +3,9 @@ from .decorators import as_form
 from typing import Optional
 
 
-@as_form
+# @as_form
 class UploadPassport(BaseModel):
-    name: str
+    id: int
     passport_url: Optional[str]
 
 

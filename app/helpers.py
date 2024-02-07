@@ -51,7 +51,7 @@ def convert_and_trim_bb(image, rect):
 	return (startX, startY, w, h)
 
 
-async def get_one_face_descriptor(file):
+async def generate_face_descriptor_from_file(file):
     passport_image = await file.read()
     # Convert the bytes to a NumPy array representing the image
     nparr = np.frombuffer(passport_image, np.uint8)
@@ -66,4 +66,11 @@ async def get_one_face_descriptor(file):
 
     face_descriptor = extract_face_features(image, face[0])
 
+    return face_descriptor
+
+
+async def generate_face_descriptor_from_url(url):
+    image = await load_image_and_return_gray(url)
+    face = await detect_and_extract_faces_using_hog(image)
+    face_descriptor = extract_face_features(image, face[0])
     return face_descriptor

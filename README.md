@@ -45,7 +45,7 @@ Before running this API, ensure you have the following installed:
 
 - `/match-passport`: Accepts a passport photograph as input and returns the matching score, id of matched user and count of successful face matches.
 
-- `/submit-passport`: Accepts a passport photograph, name of person whose face is on the passport as input and returns a json containing user id, passport cloudinary url and username.
+- `/submit-passport`: Accepts a passport photograph as input and returns a json containing user id and passport cloudinary url.
 
 ## Example
 
