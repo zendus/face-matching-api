@@ -57,10 +57,8 @@ async def upload_image_to_cloudinary(file: UploadFile = File(...), db: Session =
 async def startup_event():
     db = SessionLocal()
     global db_passport_descriptors
-    global successful_match_count
     try:
         db_passport_descriptors = await generate_passport_descriptors_from_db(db)
-        successful_match_count = 0
         logger.warning("Passport Face Descriptors Loaded in memory Successfully")
     except Exception as e:
         logger.error(f"Error occurred during server startup: {e}")
